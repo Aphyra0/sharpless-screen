@@ -1,5 +1,7 @@
 # sharpless
 
+<img src="logo.svg" width="120" alt="sharpless logo">
+
 Rounded screen corners for Wayland.
 
 - Works on any compositor with `wlr-layer-shell` (Hyprland, Sway, river, ...)
