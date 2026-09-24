@@ -1,6 +1,6 @@
-# sharpless
+<img src="logo.svg" width="100%" alt="sharpless logo">
 
-<img src="logo.svg" width="120" alt="sharpless logo">
+# sharpless
 
 Rounded screen corners for Wayland.
 
