@@ -15,7 +15,7 @@ Requires a live Wayland session.
 With Nix (no clone needed):
 
 ```sh
-nix run github:Aphyra0/sharpless
+nix run github:Aphyra0/sharpless-screen
 ```
 
 ## Command-line options
