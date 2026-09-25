@@ -1,4 +1,4 @@
-<img src="logo.svg" width="100%" alt="sharpless logo">
+<img src="logo.svg" width="100%" alt="wlr-screen-corners logo">
 
 # wlr-screen-corners
 

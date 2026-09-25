@@ -27,7 +27,7 @@
           # touch src/. naersk's `-deps` derivation hashes the full source
           # tree, forcing a from-scratch recompile of every crate on any edit.
           default = pkgs.rustPlatform.buildRustPackage {
-            pname = "sharpless";
+            pname = "wlr-screen-corners";
             version = "0.1.0";
             src = pkgs.lib.cleanSourceWith {
               src = ./.;
@@ -47,7 +47,7 @@
               description = "Draw black rounded corners at the edges of the screen on Wayland";
               license = licenses.mit;
               platforms = platforms.linux;
-              mainProgram = "sharpless";
+              mainProgram = "wlr-screen-corners";
             };
           };
         }
