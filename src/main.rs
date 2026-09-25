@@ -1,13 +1,4 @@
-//! sharpless: draw black rounded corners at the edges of each screen output.
-//!
-//! For every monitor, a transparent, click-through layer-shell surface is
-//! created in the overlay layer anchored to all four edges so it covers the
-//! whole screen. Each frame, a tiny-skia pixmap backed by the shared SHM slot
-//! is filled with opaque black squircle corner shapes (anti-aliased by the
-//! rasterizer, kept fully transparent everywhere else). The compositor
-//! composites the result, so each corner of the screen shows a black rounded
-//! edge.
-
+#![doc = include_str!("../README.md")]
 mod rounding;
 
 use std::num::NonZeroU32;
@@ -222,7 +213,7 @@ impl App {
             qh,
             surface,
             Layer::Overlay,
-            Some("sharpless"),
+            Some("wlr-screen-corners"),
             Some(output),
         );
         // Anchored to all four edges => the surface is sized to the whole output.
@@ -288,7 +279,6 @@ impl App {
         let buf_w = width * scale;
         let buf_h = height * scale;
         let radius = self.cli.radius.max(1) * scale;
-        println!("draw: logical {width}x{height} scale {scale} => buffer {buf_w}x{buf_h}");
 
         let surface = overlay.layer.wl_surface();
         surface.set_buffer_transform(wl_output::Transform::Normal);
@@ -360,25 +350,9 @@ impl CompositorHandler for App {
         &mut self,
         _conn: &Connection,
         _qh: &QueueHandle<Self>,
-        surface: &wl_surface::WlSurface,
+        _surface: &wl_surface::WlSurface,
         _time: u32,
     ) {
-        // Debug: dump per-frame size snapshot so rotation issues are visible
-        // in stdout.
-        if let Some(o) = self
-            .overlays
-            .iter()
-            .find(|o| o.layer.wl_surface() == surface)
-        {
-            println!(
-                "frame: logical {}x{} scale {} => buffer {}x{}",
-                o.width,
-                o.height,
-                o.scale,
-                o.width * o.scale.max(1) as u32,
-                o.height * o.scale.max(1) as u32,
-            );
-        }
     }
 
     fn surface_enter(
