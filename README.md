@@ -1,6 +1,6 @@
 <img src="logo.svg" width="100%" alt="sharpless logo">
 
-# sharpless
+# wlr-screen-corners
 
 Rounded screen corners for Wayland.
 
@@ -15,7 +15,7 @@ Requires a live Wayland session.
 With Nix (no clone needed):
 
 ```sh
-nix run github:Aphyra0/sharpless-screen
+nix run github:Aphyra0/wlr-screen-corners
 ```
 
 ## Command-line options
@@ -23,7 +23,7 @@ nix run github:Aphyra0/sharpless-screen
 ```
 Draw black rounded corners at the edges of the screen on Wayland
 
-Usage: sharpless [OPTIONS]
+Usage: wlr-screen-corners [OPTIONS]
 
 Options:
       --radius <RADIUS>        Corner radius in logical pixels [default: 6]
@@ -41,7 +41,7 @@ Options:
 Example: big soft corners
 
 ```sh
-sharpless --radius 12 --curvature 5
+wlr-screen-corners --radius 12 --curvature 5
 ```
 
 ## Developing
