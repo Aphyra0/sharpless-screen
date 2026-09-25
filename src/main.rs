@@ -145,23 +145,46 @@ fn paint_corners(canvas: &mut [u8], width: u32, height: u32, radius: u32, curvat
     for chunk in data.chunks_exact_mut(4) {
         chunk.swap(0, 2);
     }
-    let Some(path) = corner_path(width, height, radius, curvature) else {
-        return;
-    };
-    let paint = Paint {
-        shader: tiny_skia::Shader::SolidColor(Color::from_rgba8(0, 0, 0, 0xFF)),
-        ..Default::default()
-    };
-    pixmap.fill_path(
-        &path,
-        &paint,
-        FillRule::Winding,
-        Transform::identity(),
-        None,
-    );
-    let data = pixmap.data_mut();
-    for chunk in data.chunks_exact_mut(4) {
-        chunk.swap(0, 2);
+    // Supersample 4x while rasterizing for smoother AA: draw into a 4x
+    // offscreen pixmap (scaled about the top-left corner) and average the
+    // 4x4 sample blocks back down into the real buffer.
+    let ss = 4u32;
+    let ss_w = (width * ss) as usize;
+    let ss_h = (height * ss) as usize;
+    let ss_len = ss_w * ss_h * 4;
+    let mut ss_buf = vec![0u8; ss_len];
+    if let Some(mut ss_pixmap) = PixmapMut::from_bytes(&mut ss_buf, ss_w as u32, ss_h as u32) {
+        if let Some(path) = corner_path(width * ss, height * ss, radius * ss, curvature) {
+            let paint = Paint {
+                shader: tiny_skia::Shader::SolidColor(Color::from_rgba8(0, 0, 0, 0xFF)),
+                ..Default::default()
+            };
+            ss_pixmap.fill_path(
+                &path,
+                &paint,
+                FillRule::Winding,
+                Transform::identity(),
+                None,
+            );
+        }
+        let data = pixmap.data_mut();
+        for y in 0..height as usize {
+            for x in 0..width as usize {
+                let mut a = 0u32;
+                for sy in 0..ss as usize {
+                    let row = (y * ss as usize + sy) * ss_w;
+                    for sx in 0..ss as usize {
+                        a += ss_buf[(row + x * ss as usize + sx) * 4 + 3] as u32;
+                    }
+                }
+                let avg = (a / (ss * ss)) as u8;
+                let px = (y * width as usize + x) * 4;
+                data[px] = 0;
+                data[px + 1] = 0;
+                data[px + 2] = 0;
+                data[px + 3] = avg;
+            }
+        }
     }
 }
 
